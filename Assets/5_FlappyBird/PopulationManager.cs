@@ -59,7 +59,7 @@ namespace _5_FlappyBird
         {
             List<GameObject> sortedList = population.OrderBy(o => o.GetComponent<Brain>().distanceTravelled).ToList();
             population.Clear();
-            for (int i = (int) (3*sortedList.Count /4.0f); i < sortedList.Count-1; i++)
+            for (int i = (int) (3*sortedList.Count /4.0f)-1; i < sortedList.Count-1; i++)
             {
                 population.Add(Breed(sortedList[i],sortedList[i+1]));
                 population.Add(Breed(sortedList[i+1],sortedList[i]));
