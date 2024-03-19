@@ -1,56 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
-using UMGS;
+using Common_Scripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class MapManager : SingletonPersistent<MapManager>
+namespace _MapSystem.Scripts
 {
-    public GameObject obstaclesPanel;
-    private GameObject pointObject;
-    private Vector3 position;
-
-    public GameObject grid;
-    public GameObject obstaclesHolder;
-
-    public GameObject mapsGallery;
-    public GameObject galleryMapButton;
-
-    public void HandleClick(GameObject pointObject,Vector3 position)
+    public class MapManager : SingletonPersistent<MapManager>
     {
-        Debug.Log("Clicked object name: "+pointObject.name+"\n"+"Clicked object position: " + position);
-        obstaclesPanel.SetActive(true);
+        public GameObject obstaclesPanel;
+        private GameObject pointObject;
+        private Vector3 position;
 
-        this.pointObject = pointObject;
-        this.position = position;
-    }
+        public GameObject grid;
+        public GameObject obstaclesHolder;
 
-    public void SpawnObstacle(GameObject objectToSpawn,bool isNone)
-    {
-        Destroy(pointObject);
-        GameObject newObj = Instantiate(objectToSpawn, position, Quaternion.identity);
-        if (isNone)
+        public GameObject mapsGallery;
+        public GameObject galleryMapButton;
+
+        public void HandleClick(GameObject pointObject,Vector3 position)
         {
-            newObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
-            newObj.transform.SetParent(grid.transform);
+            Debug.Log("Clicked object name: "+pointObject.name+"\n"+"Clicked object position: " + position);
+            obstaclesPanel.SetActive(true);
+
+            this.pointObject = pointObject;
+            this.position = position;
         }
-        else
+
+        public void SpawnObstacle(GameObject objectToSpawn,bool isNone)
         {
-            newObj.GetComponent<SpriteRenderer>().sortingOrder = 2;
-            newObj.transform.SetParent(obstaclesHolder.transform);
+            Destroy(pointObject);
+            GameObject newObj = Instantiate(objectToSpawn, position, Quaternion.identity);
+            if (isNone)
+            {
+                newObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                newObj.transform.SetParent(grid.transform);
+            }
+            else
+            {
+                newObj.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                newObj.transform.SetParent(obstaclesHolder.transform);
+            }
+            ClickableObject clickableObj = newObj.AddComponent<ClickableObject>();
+            clickableObj.OnClick += (clickableObj,position) => HandleClick(clickableObj,position);
+            obstaclesPanel.SetActive(false);
         }
-        ClickableObject clickableObj = newObj.AddComponent<ClickableObject>();
-        clickableObj.OnClick += (clickableObj,position) => HandleClick(clickableObj,position);
-        obstaclesPanel.SetActive(false);
-    }
 
-    public void ShowLevelEditor()
-    {
-        grid.SetActive(true);
-    }
+        public void ShowLevelEditor()
+        {
+            grid.SetActive(true);
+        }
 
-    public void hideLevelEditor()
-    {
-        grid.SetActive(false);
+        public void hideLevelEditor()
+        {
+            grid.SetActive(false);
+        }
     }
 }

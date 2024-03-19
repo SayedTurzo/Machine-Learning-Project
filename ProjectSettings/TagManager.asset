@@ -6,6 +6,13 @@ TagManager:
   tags:
   - dead
   - platform
+  - wall
+  - Coin
+  - Floor
+  - top
+  - bottom
+  - topWall
+  - downWall
   layers:
   - Default
   - TransparentFX
@@ -15,7 +22,7 @@ TagManager:
   - UI
   - Ethan
   - Bot
-  - 
+  - Bird
   - 
   - 
   - 

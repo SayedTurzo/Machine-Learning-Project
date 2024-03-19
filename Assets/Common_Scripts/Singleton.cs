@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-
-namespace UMGS
+namespace Common_Scripts
 {
 
 

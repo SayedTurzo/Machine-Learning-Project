@@ -1,98 +1,101 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CameraController : MonoBehaviour
+namespace _MapSystem.Scripts
 {
-    public Slider slider; // Reference to the UI Slider
-    public float minY = 0f; // Minimum y position
-    public float maxY = 38f; // Maximum y position
-    public float sensitivity = 0.1f; // Touch or mouse sensitivity
-
-    private Vector2 lastInputPosition;
-
-    void Start()
+    public class CameraController : MonoBehaviour
     {
-        // Subscribe to the slider's OnValueChanged event
-        slider.onValueChanged.AddListener(OnSliderValueChanged);
+        public Slider slider; // Reference to the UI Slider
+        public float minY = 0f; // Minimum y position
+        public float maxY = 38f; // Maximum y position
+        public float sensitivity = 0.1f; // Touch or mouse sensitivity
 
-        // Set initial slider value based on the camera's initial position
-        UpdateSliderValue();
-    }
+        private Vector2 lastInputPosition;
 
-    void Update()
-    {
-        if (Input.touchSupported && Input.touchCount > 0)
+        void Start()
         {
-            Touch touch = Input.GetTouch(0);
+            // Subscribe to the slider's OnValueChanged event
+            slider.onValueChanged.AddListener(OnSliderValueChanged);
 
-            if (touch.phase == TouchPhase.Began)
+            // Set initial slider value based on the camera's initial position
+            UpdateSliderValue();
+        }
+
+        void Update()
+        {
+            if (Input.touchSupported && Input.touchCount > 0)
             {
-                lastInputPosition = touch.position;
+                Touch touch = Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    lastInputPosition = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Moved)
+                {
+                    Vector2 delta = touch.position - lastInputPosition;
+                    float deltaY = delta.y * sensitivity;
+
+                    // Invert deltaY to match touch direction
+                    deltaY *= -1;
+
+                    MoveCamera(deltaY);
+
+                    lastInputPosition = touch.position;
+                }
             }
-            else if (touch.phase == TouchPhase.Moved)
+            else if (Input.mousePresent)
             {
-                Vector2 delta = touch.position - lastInputPosition;
-                float deltaY = delta.y * sensitivity;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    lastInputPosition = Input.mousePosition;
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    Vector2 delta = (Vector2)Input.mousePosition - lastInputPosition;
+                    float deltaY = delta.y * sensitivity;
 
-                // Invert deltaY to match touch direction
-                deltaY *= -1;
+                    MoveCamera(deltaY);
 
-                MoveCamera(deltaY);
-
-                lastInputPosition = touch.position;
+                    lastInputPosition = Input.mousePosition;
+                }
             }
         }
-        else if (Input.mousePresent)
+
+        void MoveCamera(float deltaY)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                lastInputPosition = Input.mousePosition;
-            }
-            else if (Input.GetMouseButton(0))
-            {
-                Vector2 delta = (Vector2)Input.mousePosition - lastInputPosition;
-                float deltaY = delta.y * sensitivity;
+            // Invert deltaY to reverse camera movement
+            //deltaY *= -1;
 
-                MoveCamera(deltaY);
+            // Update camera position within range
+            Vector3 newPosition = transform.position + new Vector3(0f, deltaY, 0f);
+            newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+            transform.position = newPosition;
 
-                lastInputPosition = Input.mousePosition;
-            }
+            // Update slider value based on camera's new position
+            UpdateSliderValue();
         }
-    }
 
-    void MoveCamera(float deltaY)
-    {
-        // Invert deltaY to reverse camera movement
-        //deltaY *= -1;
-
-        // Update camera position within range
-        Vector3 newPosition = transform.position + new Vector3(0f, deltaY, 0f);
-        newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-        transform.position = newPosition;
-
-        // Update slider value based on camera's new position
-        UpdateSliderValue();
-    }
-
-    void UpdateSliderValue()
-    {
-        // Invert camera's Y-position to reverse slider value
-        float invertedY = maxY - (transform.position.y - minY);
+        void UpdateSliderValue()
+        {
+            // Invert camera's Y-position to reverse slider value
+            float invertedY = maxY - (transform.position.y - minY);
         
-        // Map inverted camera's Y-position to slider value within range
-        float sliderValue = Mathf.InverseLerp(minY, maxY, invertedY);
-        slider.value = sliderValue;
-    }
+            // Map inverted camera's Y-position to slider value within range
+            float sliderValue = Mathf.InverseLerp(minY, maxY, invertedY);
+            slider.value = sliderValue;
+        }
 
-    void OnSliderValueChanged(float value)
-    {
-        // Invert the slider value to reverse the movement
-        value = 1f - value;
+        void OnSliderValueChanged(float value)
+        {
+            // Invert the slider value to reverse the movement
+            value = 1f - value;
 
-        // Map inverted slider value to camera's Y-position within range
-        float newY = Mathf.Lerp(minY, maxY, value);
-        Vector3 newPosition = transform.position;
-        newPosition.y = newY;
-        transform.position = newPosition;
+            // Map inverted slider value to camera's Y-position within range
+            float newY = Mathf.Lerp(minY, maxY, value);
+            Vector3 newPosition = transform.position;
+            newPosition.y = newY;
+            transform.position = newPosition;
+        }
     }
 }

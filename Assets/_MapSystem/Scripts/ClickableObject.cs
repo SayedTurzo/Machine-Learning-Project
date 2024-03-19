@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class ClickableObject : MonoBehaviour
+namespace _MapSystem.Scripts
 {
-    public event System.Action<GameObject,Vector3> OnClick;
-
-    void OnMouseDown()
+    public class ClickableObject : MonoBehaviour
     {
-        Debug.Log("Clicked on obstacle");
-        OnClick?.Invoke(gameObject,transform.position);
+        public event System.Action<GameObject,Vector3> OnClick;
+
+        void OnMouseDown()
+        {
+            Debug.Log("Clicked on obstacle");
+            OnClick?.Invoke(gameObject,transform.position);
+        }
     }
 }

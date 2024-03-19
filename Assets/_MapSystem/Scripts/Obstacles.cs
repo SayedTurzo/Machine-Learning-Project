@@ -1,23 +1,23 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Obstacles : MonoBehaviour
+namespace _MapSystem.Scripts
 {
-    public GameObject obstacleToSpawn;
-    public Button button;
-
-    public bool none=false;
-
-    private void Start()
+    public class Obstacles : MonoBehaviour
     {
-        button.onClick.AddListener(SetSpawnInfo);
-    }
+        public GameObject obstacleToSpawn;
+        public Button button;
 
-    private void SetSpawnInfo()
-    {
-        MapManager.Instance.SpawnObstacle(obstacleToSpawn,none);
+        public bool none=false;
+
+        private void Start()
+        {
+            button.onClick.AddListener(SetSpawnInfo);
+        }
+
+        private void SetSpawnInfo()
+        {
+            MapManager.Instance.SpawnObstacle(obstacleToSpawn,none);
+        }
     }
 }
