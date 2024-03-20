@@ -35,14 +35,18 @@ namespace _5_FlappyBird
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            if(other.gameObject.CompareTag("dead"))
+            {
+                alive = false;
+            }
+        }
+
+        private void OnCollisionStay2D(Collision2D other)
+        {
             if (other.gameObject.CompareTag("top") || other.gameObject.CompareTag("bottom") ||
                 other.gameObject.CompareTag("topWall") || other.gameObject.CompareTag("downWall"))
             {
                 crash++;
-            }
-            else if(other.gameObject.CompareTag("dead"))
-            {
-                alive = false;
             }
         }
 
