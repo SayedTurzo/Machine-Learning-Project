@@ -65,7 +65,16 @@ namespace _8_Artificial_NeuralNetwork
                     }
 
                     N -= layers[i].neurons[j].bias;
-                    layers[i].neurons[j].output = ActivateFunction(N);
+
+                    if (i==numHidden)
+                    {
+                        layers[i].neurons[j].output = ActivateFunctionO(N);
+                    }
+                    else
+                    {
+                        layers[i].neurons[j].output = ActivateFunction(N);
+                    }
+                    
                     outputs.Add(layers[i].neurons[j].output);
                 }
             }
@@ -120,7 +129,12 @@ namespace _8_Artificial_NeuralNetwork
 
         double ActivateFunction(double value)
         {
-            return Sigmoid(value);
+            return TanH(value);
+        }
+        
+        double ActivateFunctionO(double value)
+        {
+            return TanH(value);
         }
 
         private double Sigmoid(double value)
@@ -138,6 +152,29 @@ namespace _8_Artificial_NeuralNetwork
             else
             {
                 return 1;
+            }
+        }
+
+        double TanH(double value)
+        {
+            return (2 * (Sigmoid(2 * value)) - 1);
+        }
+
+        double ReLu(double value)
+        {
+            if (value > 0) return value;
+            else
+            {
+                return 0;
+            }
+        }
+
+        double LeakyReLu(double value)
+        {
+            if (value < 0) return 0.01 * value;
+            else
+            {
+                return value;
             }
         }
     }
