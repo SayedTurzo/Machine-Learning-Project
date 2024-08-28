@@ -1,0 +1,20 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace _8_Artificial_NeuralNetwork
+{
+    public class Layer : MonoBehaviour
+    {
+        public int numNeurons;
+        public List<Neuron> neurons = new List<Neuron>();
+
+        public Layer(int nNeurons, int numNeuronInputs)
+        {
+            numNeurons = nNeurons;
+            for (int i = 0; i < nNeurons; i++)
+            {
+                neurons.Add(new Neuron(numNeuronInputs));
+            }
+        }
+    }
+}
