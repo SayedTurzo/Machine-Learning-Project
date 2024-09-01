@@ -16,11 +16,11 @@ namespace _9_Pong_ANN.ANN
 		public float numSaved = 0;
 		public float numMissed = 0;
 
-		global::ANN ann;
+		global::_9_Pong_ANN.ANN.ANN ann;
 
 		// Use this for initialization
 		void Start () {
-			ann = new global::ANN(6, 1, 1, 4, 0.11);
+			ann = new global::_9_Pong_ANN.ANN.ANN(6, 1, 1, 4, 0.11);
 			brb = ball.GetComponent<Rigidbody2D>();		
 		}
 

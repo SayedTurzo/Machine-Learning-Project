@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace _9_Pong_ANN.ANN
+namespace _10_Self_Balancing.ANN
 {
 	public class Neuron {
 

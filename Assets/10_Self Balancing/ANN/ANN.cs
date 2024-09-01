@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace _9_Pong_ANN.ANN
+namespace _10_Self_Balancing.ANN
 {
 	public class ANN{
 
@@ -79,13 +79,66 @@ namespace _9_Pong_ANN.ANN
 					}
 
 					N -= layers[i].neurons[j].bias;
-					layers[i].neurons[j].output = AF(N);
+
+					if(i == numHidden)
+						layers[i].neurons[j].output = ActivationFunctionO(N);
+					else
+						layers[i].neurons[j].output = ActivationFunction(N);
+					
 					outputValues.Add(layers[i].neurons[j].output);
 					currentInput = 0;
 				}
 			}
 			return outputValues;
 		}
+
+		public List<double> CalcOutput(List<double> inputValues)
+		{
+			List<double> inputs = new List<double>();
+			List<double> outputValues = new List<double>();
+			int currentInput = 0;
+
+			if(inputValues.Count != numInputs)
+			{
+				Debug.Log("ERROR: Number of Inputs must be " + numInputs);
+				return outputValues;
+			}
+
+			inputs = new List<double>(inputValues);
+			for(int i = 0; i < numHidden + 1; i++)
+			{
+				if(i > 0)
+				{
+					inputs = new List<double>(outputValues);
+				}
+				outputValues.Clear();
+
+				for(int j = 0; j < layers[i].numNeurons; j++)
+				{
+					double N = 0;
+					layers[i].neurons[j].inputs.Clear();
+
+					for(int k = 0; k < layers[i].neurons[j].numInputs; k++)
+					{
+						layers[i].neurons[j].inputs.Add(inputs[currentInput]);
+						N += layers[i].neurons[j].weights[k] * inputs[currentInput];
+						currentInput++;
+					}
+
+					N -= layers[i].neurons[j].bias;
+
+					if(i == numHidden)
+						layers[i].neurons[j].output = ActivationFunctionO(N);
+					else
+						layers[i].neurons[j].output = ActivationFunction(N);
+					
+					outputValues.Add(layers[i].neurons[j].output);
+					currentInput = 0;
+				}
+			}
+			return outputValues;
+		}
+
 
 		public string PrintWeights()
 		{
@@ -98,6 +151,7 @@ namespace _9_Pong_ANN.ANN
 					{
 						weightStr += w + ",";
 					}
+					weightStr += n.bias + ",";
 				}
 			}
 			return weightStr;
@@ -117,6 +171,8 @@ namespace _9_Pong_ANN.ANN
 						n.weights[i] = System.Convert.ToDouble(weightValues[w]);
 						w++;
 					}
+					n.bias = System.Convert.ToDouble(weightValues[w]);
+					w++;
 				}
 			}
 		}
@@ -162,20 +218,38 @@ namespace _9_Pong_ANN.ANN
 
 		}
 
-		double AF(double value)
+
+		double ActivationFunction(double value)
 		{
 			return TanH(value);
 		}
 
-		double Identity(double value)
+		double ActivationFunctionO(double value)
 		{
-			return value;
+			return Sigmoid(value);
 		}
 
 		double TanH(double value)
 		{
 			double k = (double) System.Math.Exp(-2*value);
 			return 2 / (1.0f + k) - 1;
+		}
+
+		double ReLu(double value)
+		{
+			if(value > 0) return value;
+			else return 0;
+		}
+
+		double Linear(double value)
+		{
+			return value;
+		}
+
+		double LeakyReLu(double value)
+		{
+			if(value < 0) return 0.01*value;
+			else return value;
 		}
 
 		double Sigmoid(double value) 
